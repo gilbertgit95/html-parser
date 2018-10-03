@@ -25,7 +25,13 @@
   // regex character detector
   const LINE_BREAK_REGEX = /\r?\n|\r/g
   const MULTIPLE_SPACE_REGEX = /( {2})+/g
-  const HTML_COMMENT_REGEX = /(<!--)+(.*)+(-->)/g
+  const HTML_COMMENT_REGEX = /<\!-+.*-+>/g
+
+  // element types detectors regex
+  const TYPEA_TAG = /<\!+[^-].+>/g
+  const TYPEB_TAG_OPENING = /<[^!-\/].+[^\/]>/g
+  const TYPEB_TAG_CLOSING = /<\/.+>/g
+  const TYPEC_TAG = /<.+\/>/g
 
   // the local function global to the main class
   // reusable functions
