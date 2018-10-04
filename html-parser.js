@@ -28,6 +28,7 @@
   const HTML_COMMENT_REGEX = /<\!-+.*-+>/g
 
   // element types detectors regex
+  const FIRST_TAG = /<[^<>]+>/
   const GLOBAL_TAG = /<[^<>]+>/g
   const TYPEA_TAG = /<\!+[^-][^<>]+>/g
   const TYPEB_TAG_OPENING = /<[^!-\/][^<>]+[^\/]>/g
@@ -52,6 +53,12 @@
               .replace(HTML_COMMENT_REGEX, '')
               .replace(MULTIPLE_SPACE_REGEX, '')
               .replace(LINE_BREAK_REGEX, '')
+  }
+
+  // match a tag specific tag for dinamic tag matching
+  let matchTag = (htmlString, tag) => {
+    let reg = new RegExp(`(<${ tag }|<\/${ tag })(>| [^<>]+>)`, 'g')
+    return htmlString.match(reg)
   }
 
   let toJsonParser = htmlString => {
@@ -82,6 +89,12 @@
         }
         console.log('__________________________')
       })
+
+      // test for using string regex for dynamic detection
+      let regString = '<[^<>]+>'
+      let reg = new RegExp(regString)
+
+      console.log('match tags: ', matchTag(cleanHtml, 'ate'))
 
       // console.log('original:', htmlString)
       // console.log('cleaned:', cleanHtml)
