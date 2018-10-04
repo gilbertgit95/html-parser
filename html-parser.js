@@ -28,10 +28,18 @@
   const HTML_COMMENT_REGEX = /<\!-+.*-+>/g
 
   // element types detectors regex
-  const TYPEA_TAG = /<\!+[^-].+>/g
-  const TYPEB_TAG_OPENING = /<[^!-\/].+[^\/]>/g
-  const TYPEB_TAG_CLOSING = /<\/.+>/g
-  const TYPEC_TAG = /<.+\/>/g
+  const GLOBAL_TAG = /<[^<>]+>/g
+  const TYPEA_TAG = /<\!+[^-][^<>]+>/g
+  const TYPEB_TAG_OPENING = /<[^!-\/][^<>]+[^\/]>/g
+  const TYPEB_TAG_CLOSING = /<\/[^<>]+>/g
+  const TYPEC_TAG = /<[^<>]+\/>/g
+
+  const TYPEA_TAG_NAME = /<![^<> ]+[^<>=" ]/g
+  const TYPEB_TAG_NAME = /<[^<> ]+[^<>=" ]/g
+
+  const TYPEA_ATTRIBUTE = / [^<>"= ]+[ |>|\/]/g
+  const TYPEB_ATTRIBUTE = / [^<> ]+="[^<>"]+"/g
+  const TYPEC_ATTRIBUTE = / "[^<>" ]+"/g
 
   // the local function global to the main class
   // reusable functions
@@ -55,8 +63,30 @@
       // remove unwanted codes
       let cleanHtml = cleanHtmlString(htmlString)
 
-      console.log('original:', htmlString)
-      console.log('cleaned:', cleanHtml)
+      let tags = cleanHtml.match(TYPEB_TAG_OPENING)
+
+      tags.forEach((tag) => {
+        let attA = tag.match(TYPEA_ATTRIBUTE)
+        let attB = tag.match(TYPEB_ATTRIBUTE)
+        let attC = tag.match(TYPEC_ATTRIBUTE)
+
+        console.log(tag.match(TYPEB_TAG_NAME))
+        if (attA) {
+          console.log('type-a: ', attA)
+        }
+        if (attB) {
+          console.log('type-b: ', attB)
+        }
+        if (attC) {
+          console.log('type-c: ', attC)
+        }
+        console.log('__________________________')
+      })
+
+      // console.log('original:', htmlString)
+      // console.log('cleaned:', cleanHtml)
+
+      // console.log('tags', tags)
     }
 
     return parsed

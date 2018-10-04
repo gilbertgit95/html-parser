@@ -12,7 +12,7 @@ let htmlText = `
       </script>
     </head>
 
-    <body>
+    <body "app-body">
 
       <!-- the first child of the body -->
       <div class="container main-page" id="main-page">
@@ -26,8 +26,20 @@ let htmlText = `
       <div>
         <label class="label">
           <span>checkbox name</span>
-          <input type="checkbox" />
+          <input type="checkbox" checked />
         </label>
+        <div class="sub-container">
+          <div class="block-diplay item">
+            <div class="item-content" flex>
+              hello there
+            </div>
+            <span class="item-content" flex>
+              hows life?
+            </span>
+          </div>
+          <div class="block-diplay item">
+          </div>
+        </div>
       </div>
 
     </body>
