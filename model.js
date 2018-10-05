@@ -1,9 +1,10 @@
 // tag rules
 const tagTypes = {
   typeA: 0, // <!doctype blabla "bla">
-  typeB: 1, // <tag blabbla="bla" blaba ></tag>
-  typeC: 2, // <tag blabbla="bla" blaba />
-  typeD: 3 // <tag blabbla="bla" blaba >typed</tag> (text node)
+  typeB: 1, // <tag blabbla="bla" blaba >
+  typeC: 2, // </tag>
+  typeD: 3, // <tag blabbla="bla" blaba />
+  typeE: 4 // <tag blabbla="bla" blaba >typed</tag> (text node)
 }
 
 // property rules
@@ -50,7 +51,7 @@ let htmlJson = [
     tagType: 0,
     props: [
       {
-        prop: "html",
+        prop: 'html',
         value: null,
         proptype: 1
       }
@@ -61,8 +62,8 @@ let htmlJson = [
     tagType: 1,
     props: [
       {
-        prop: "lang",
-        value: "en",
+        prop: 'lang',
+        value: 'en',
         proptype: 0
       }
     ],
@@ -77,8 +78,8 @@ let htmlJson = [
             tagType: 2,
             props: [
               {
-                prop: "charset",
-                value: "utf-8",
+                prop: 'charset',
+                value: 'utf-8',
                 proptype: 0
               }
             ],
@@ -89,13 +90,13 @@ let htmlJson = [
             tagType: 1,
             props: [
               {
-                prop: "type",
-                value: "text/javascript",
+                prop: 'type',
+                value: 'text/javascript',
                 proptype: 0
               },
               {
-                prop: "src",
-                value: "",
+                prop: 'src',
+                value: '',
                 proptype: 0
               }
             ],
@@ -109,7 +110,7 @@ let htmlJson = [
         props: [
           {
             prop: null,
-            value: "app-body",
+            value: 'app-body',
             proptype: 2
           }
         ],
@@ -119,13 +120,13 @@ let htmlJson = [
             tagType: 1,
             props: [
               {
-                prop: "class",
-                value: "container main-page",
+                prop: 'class',
+                value: 'container main-page',
                 proptype: 0
               },
               {
-                prop: "id",
-                value: "main-page",
+                prop: 'id',
+                value: 'main-page',
                 proptype: 0
               }
             ],
@@ -136,7 +137,7 @@ let htmlJson = [
                 props: [],
                 nodes: [
                   {
-                    tag: "hello",
+                    tag: 'hello',
                     tagType: 3,
                     props: [],
                     nodes: []
@@ -150,13 +151,13 @@ let htmlJson = [
             tagType: 2,
             props: [
               {
-                prop: "type",
-                value: "text",
+                prop: 'type',
+                value: 'text',
                 proptype: 0
               },
               {
-                prop: "class",
-                value: "input",
+                prop: 'class',
+                value: 'input',
                 proptype: 0
               }
             ],
@@ -173,3 +174,8 @@ let htmlJson = [
     ]
   }
 ]
+
+let proccessJson = {
+  doc: `html string`,
+  nodes: []
+}

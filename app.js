@@ -4,6 +4,7 @@ console.log('app has started...')
 
 // sample html string for development purpose
 let htmlText = `
+  shit
   <!doctype html>
   <html lang="en">
     <head>
@@ -13,7 +14,7 @@ let htmlText = `
     </head>
 
     <body "app-body">
-
+      <!doctype html>
       <!-- the first child of the body -->
       <div class="container main-page" id="main-page">
         <span>hello</span>

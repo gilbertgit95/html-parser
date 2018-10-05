@@ -21,6 +21,23 @@
 
 })(() => {
   'use strict'
+
+  // tag rules
+  const tagTypes = {
+    typeA: 0, // <!doctype blabla "bla">
+    typeB: 1, // <tag blabbla="bla" blaba >
+    typeC: 2, // </tag>
+    typeD: 3, // <tag blabbla="bla" blaba />
+    typeE: 4 // <tag blabbla="bla" blaba >typed</tag> (text node)
+  }
+
+  // property rules
+  const propType = {
+    propValue: 0, // <tag prop="value">
+    prop: 1, // <tag prop>
+    value: 2, // <tag "value" />
+  }
+
   // the parser factory
   // regex character detector
   const LINE_BREAK_REGEX = /\r?\n|\r/g
@@ -30,20 +47,78 @@
   // element types detectors regex
   const FIRST_TAG = /<[^<>]+>/
   const GLOBAL_TAG = /<[^<>]+>/g
-  const TYPEA_TAG = /<\!+[^-][^<>]+>/g
-  const TYPEB_TAG_OPENING = /<[^!-\/][^<>]+[^\/]>/g
-  const TYPEB_TAG_CLOSING = /<\/[^<>]+>/g
-  const TYPEC_TAG = /<[^<>]+\/>/g
-
-  const TYPEA_TAG_NAME = /<![^<> ]+[^<>=" ]/g
-  const TYPEB_TAG_NAME = /<[^<> ]+[^<>=" ]/g
+  const TYPEA_TAG = /<\!+[^-<>]+>/g
+  const TYPEB_TAG = /<[^!<>\/][^<>]+[^\/]>/g
+  const TYPEC_TAG = /<\/[^<>]+>/g
+  const TYPED_TAG = /<[^<>]+\/>/g
 
   const TYPEA_ATTRIBUTE = / [^<>"= ]+[ |>|\/]/g
   const TYPEB_ATTRIBUTE = / [^<> ]+="[^<>"]+"/g
   const TYPEC_ATTRIBUTE = / "[^<>" ]+"/g
+  // match a tag specific tag for dinamic tag matching
+  const matchTypeBCTags = (htmlString, tag) => {
+    let reg = new RegExp(`(<${ tag }|<\/${ tag })(>| [^<>]+>)`, 'g')
+    return htmlString.match(reg)
+  }
 
   // the local function global to the main class
   // reusable functions
+  let tagType = tag => {
+    // tag on 3 types of identification
+    if (tag.match(TYPEB_TAG)) {
+      return 1
+    } else if (tag.match(TYPEC_TAG)) {
+      return 2
+    } else if (tag.match(TYPED_TAG)) {
+      return 3
+    } else if (tag.match(TYPEA_TAG)) {
+      return 0
+    } else {
+      return 4
+    }
+  }
+
+  let extractHtmlBlock = (tag, htmlString) => {
+    let result = ''
+    return result
+  }
+
+  // parse the surface layer of the input html htmlString
+  let extractSurface = htmlString => {
+    let result = []
+    let remainedString = htmlString
+
+    // the extraction process of the first layer
+    // loop until all the surface layer done parsing
+    let match = htmlString.match(FIRST_TAG)
+    // check if there are tag present on the string
+    if (match) {
+      let tag = match[0]
+      let type = tagType(tag)
+
+      // check type for extraction strategy
+      if (type == tagTypes.typeB) {
+        console.log('proccess for the block of tag')
+      } else {
+        // proccess for inline tag extraction
+          result.push({
+            stringTag: text,
+            tagType: 4
+          })
+        }
+
+        remainedString = remainedString.substr(tag.length, remainedString.length)
+        result.push({
+          stringTag: tag,
+          tagType: type
+        })
+      }
+    }
+
+    console.log(result, remainedString)
+
+    return result
+  }
 
   // clean all unwanted codes or characters
   let cleanHtmlString = htmlString => {
@@ -55,12 +130,6 @@
               .replace(LINE_BREAK_REGEX, '')
   }
 
-  // match a tag specific tag for dinamic tag matching
-  let matchTag = (htmlString, tag) => {
-    let reg = new RegExp(`(<${ tag }|<\/${ tag })(>| [^<>]+>)`, 'g')
-    return htmlString.match(reg)
-  }
-
   let toJsonParser = htmlString => {
     let parsed = {}
 
@@ -70,31 +139,15 @@
       // remove unwanted codes
       let cleanHtml = cleanHtmlString(htmlString)
 
-      let tags = cleanHtml.match(TYPEB_TAG_OPENING)
-
-      tags.forEach((tag) => {
-        let attA = tag.match(TYPEA_ATTRIBUTE)
-        let attB = tag.match(TYPEB_ATTRIBUTE)
-        let attC = tag.match(TYPEC_ATTRIBUTE)
-
-        console.log(tag.match(TYPEB_TAG_NAME))
-        if (attA) {
-          console.log('type-a: ', attA)
-        }
-        if (attB) {
-          console.log('type-b: ', attB)
-        }
-        if (attC) {
-          console.log('type-c: ', attC)
-        }
-        console.log('__________________________')
-      })
-
       // test for using string regex for dynamic detection
-      let regString = '<[^<>]+>'
-      let reg = new RegExp(regString)
 
-      console.log('match tags: ', matchTag(cleanHtml, 'ate'))
+      extractSurface(cleanHtml)
+
+      // if (cleanHtml.match(GLOBAL_TAG)) {
+      //   cleanHtml.match(GLOBAL_TAG).forEach(tag => {
+      //     console.log(tagType(tag), tag)
+      //   })
+      // }
 
       // console.log('original:', htmlString)
       // console.log('cleaned:', cleanHtml)
