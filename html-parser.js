@@ -47,6 +47,7 @@
   // element types detectors regex
   const FIRST_TAG = /<[^<>]+>/
   const GLOBAL_TAG = /<[^<>]+>/g
+
   const TYPEA_TAG = /<\!+[^-<>]+>/g
   const TYPEB_TAG = /<[^!<>\/][^<>]+[^\/]>/g
   const TYPEC_TAG = /<\/[^<>]+>/g
@@ -56,9 +57,16 @@
   const TYPEB_ATTRIBUTE = / [^<> ]+="[^<>"]+"/g
   const TYPEC_ATTRIBUTE = / "[^<>" ]+"/g
   // match a tag specific tag for dinamic tag matching
-  const matchTypeBCTags = (htmlString, tag) => {
+  const matchTypeBCTags = (tag, htmlString) => {
     let reg = new RegExp(`(<${ tag }|<\/${ tag })(>| [^<>]+>)`, 'g')
     return htmlString.match(reg)
+  }
+  // get the tagname from html tag
+  const getTagName = (tag) => {
+    let reg = /<[^<>\/\!=" ]+/
+    let match = tag.match(reg)
+
+    return match? match[0].substr(1, match[0].length): null
   }
 
   // the local function global to the main class
@@ -79,7 +87,31 @@
   }
 
   let extractHtmlBlock = (tag, htmlString) => {
-    let result = ''
+    // let matches = matchTypeBCTags(tag, htmlString)
+    let tagName = getTagName(tag)
+    let matches = matchTypeBCTags(tagName, htmlString)
+    let result = {
+      remainder: '',
+      carry: ''
+    }
+
+    if (matches) {
+      let type = null
+      let closingTag = null
+
+      // get the closing tag
+      for (let i = 0; i < matches.length; i++) {
+        if (tagType(matches[i]) === 2) {
+          closingTag = matches[i]
+          break
+        }
+      }
+
+      console.log(closingTag, htmlString.split(closingTag))
+    } else {
+      result = null
+    }
+
     return result
   }
 
@@ -87,31 +119,44 @@
   let extractSurface = htmlString => {
     let result = []
     let remainedString = htmlString
+    let count = 0
 
-    // the extraction process of the first layer
-    // loop until all the surface layer done parsing
-    let match = htmlString.match(FIRST_TAG)
-    // check if there are tag present on the string
-    if (match) {
-      let tag = match[0]
-      let type = tagType(tag)
+    while (count < 2) {
+      // the extraction process of the first layer
+      // loop until all the surface layer done parsing
+      let match = remainedString.match(FIRST_TAG)
+      // check if there are tag present on the string
+      if (match) {
+        let tag = match[0]
+        let type = tagType(tag)
 
-      // check type for extraction strategy
-      if (type == tagTypes.typeB) {
-        console.log('proccess for the block of tag')
-      } else {
-        // proccess for inline tag extraction
+        // proccess the string bfore the first match tag
+        if (match.index) {
+          let text = remainedString.substr(0, match.index)
+
+          remainedString = remainedString.substr(match.index, remainedString.length)
           result.push({
             stringTag: text,
             tagType: 4
           })
         }
 
-        remainedString = remainedString.substr(tag.length, remainedString.length)
-        result.push({
-          stringTag: tag,
-          tagType: type
-        })
+        // check type for extraction strategy
+        if (type == tagTypes.typeB) {
+          console.log('proccess for the block of tag')
+          let htmlBlockData = extractHtmlBlock(tag, remainedString)
+
+        } else {
+          // proccess for inline tag extraction
+
+          remainedString = remainedString.substr(tag.length, remainedString.length)
+          result.push({
+            stringTag: tag,
+            tagType: type
+          })
+        }
+
+        count++
       }
     }
 
