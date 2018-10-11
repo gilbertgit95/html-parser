@@ -98,6 +98,8 @@
     if (matches) {
       let type = null
       let closingTag = null
+      let closingIndex = -1
+      let blockDiff = 1
 
       // get the closing tag
       for (let i = 0; i < matches.length; i++) {
@@ -107,7 +109,44 @@
         }
       }
 
-      console.log(closingTag, htmlString.split(closingTag))
+      // find the closing tag index
+      for (let i = 1; i < matches.length; i++) {
+        if (blockDiff !== 0) {
+          if (tagType(matches[i]) === 1) {
+            blockDiff++
+          } else if (tagType(matches[i]) === 2) {
+            blockDiff--
+            closingIndex++
+          }
+        } else {
+          break
+        }
+      }
+
+      // extraction
+      if (!blockDiff && closingIndex > -1) {
+        let startPos = 0
+        let carryLength = 0
+        let closingMatches = htmlString.split(closingTag)
+
+        startPos = tag.length
+        carryLength -= tag.length
+        // console.log(closingMatches)
+        for (let i = 0; i <= closingIndex; i++) {
+          // console.log('loop: ', closingMatches[i])
+          carryLength += closingMatches[i].length + closingTag.length
+        }
+        carryLength -= closingTag.length
+
+        result.carry = htmlString.substr(startPos, carryLength)
+        result.remainder = htmlString.substr(
+          carryLength + startPos,
+          htmlString.length - (carryLength + startPos + closingTag.length)
+        )
+
+      } else {
+        result = null
+      }
     } else {
       result = null
     }
@@ -121,7 +160,7 @@
     let remainedString = htmlString
     let count = 0
 
-    while (count < 2) {
+    while (remainedString.length) {
       // the extraction process of the first layer
       // loop until all the surface layer done parsing
       let match = remainedString.match(FIRST_TAG)
@@ -143,8 +182,15 @@
 
         // check type for extraction strategy
         if (type == tagTypes.typeB) {
-          console.log('proccess for the block of tag')
+          // console.log('proccess for the block of tag')
           let htmlBlockData = extractHtmlBlock(tag, remainedString)
+
+          remainedString = htmlBlockData.remainder
+          result.push({
+            stringTag: tag,
+            tagType: type,
+            unparsed: htmlBlockData.carry
+          })
 
         } else {
           // proccess for inline tag extraction
@@ -157,11 +203,14 @@
         }
 
         count++
+      } else {
+        // push as test node or type 4 tag
+        result.push({
+          stringTag: remainedString,
+          tagType: 4
+        })
       }
     }
-
-    console.log(result, remainedString)
-
     return result
   }
 
@@ -176,28 +225,22 @@
   }
 
   let toJsonParser = htmlString => {
-    let parsed = {}
+    let parsed = null
 
     // check if the parameter is really a string
     // then start the process of parsing
     if (typeof htmlString == 'string') {
       // remove unwanted codes
       let cleanHtml = cleanHtmlString(htmlString)
+      let nodes = null
 
       // test for using string regex for dynamic detection
 
-      extractSurface(cleanHtml)
+      // loop for extracting the html surface until
+      // all are parsed
+      nodes = extractSurface(cleanHtml)
 
-      // if (cleanHtml.match(GLOBAL_TAG)) {
-      //   cleanHtml.match(GLOBAL_TAG).forEach(tag => {
-      //     console.log(tagType(tag), tag)
-      //   })
-      // }
-
-      // console.log('original:', htmlString)
-      // console.log('cleaned:', cleanHtml)
-
-      // console.log('tags', tags)
+      parsed = nodes
     }
 
     return parsed
