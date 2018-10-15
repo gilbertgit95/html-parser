@@ -231,14 +231,18 @@
     // then start the process of parsing
     if (typeof htmlString == 'string') {
       // remove unwanted codes
-      let cleanHtml = cleanHtmlString(htmlString)
-      let nodes = null
+      let level = 0
+      let nodes = [{
+        nodes: [],
+        unparsed: cleanHtmlString(htmlString)
+      }]
 
       // test for using string regex for dynamic detection
-
       // loop for extracting the html surface until
       // all are parsed
-      nodes = extractSurface(cleanHtml)
+      // while () {
+      //   nodes = extractSurface(cleanHtml)
+      // }
 
       parsed = nodes
     }
