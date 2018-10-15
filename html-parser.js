@@ -231,17 +231,38 @@
     // then start the process of parsing
     if (typeof htmlString == 'string') {
       // remove unwanted codes
-      let level = 0
       let nodes = [{
         nodes: [],
         unparsed: cleanHtmlString(htmlString)
       }]
 
-      // test for using string regex for dynamic detection
-      // loop for extracting the html surface until
-      // all are parsed
-      // while () {
-      //   nodes = extractSurface(cleanHtml)
+      // initiate first loop
+      // nodes[0].nodes = extractSurface(nodes[0].unparsed)
+      // delete nodes[0].unparsed
+
+      let tempNodes = nodes
+      // the infinit parsing loop until all are parsed
+      let deep = 2
+      let hasUnparsed = true
+
+      // loop by deep until all are parsed
+      // while (hasUnparsed || deep < 2) {
+        let level = 1
+        while (level < deep) {
+          let tempNodesCopy = []
+          for (let i = 0; i < tempNodes.length; i++) {
+            // proccess only those unparsed
+            if (tempNodes[i].unparsed) {
+              tempNodes[i].nodes = extractSurface(tempNodes[i].unparsed)
+              delete tempNodes[i].unparsed
+            }
+            tempNodesCopy = tempNodesCopy.concat(tempNodes[i].nodes)
+          }
+          hasUnparsed = tempNodesCopy.length? true: false
+          tempNodes = tempNodesCopy
+          level++
+        }
+      //   deep++
       // }
 
       parsed = nodes

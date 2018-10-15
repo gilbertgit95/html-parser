@@ -48,71 +48,71 @@ let htmlText = `
 `
 
 // initialize the library
-// let parser = new Parser()
+let parser = new Parser()
 
 // converted html string to json
-// let jsonHtml = parser.toJson(htmlText)
-// console.log('converted html: ', jsonHtml)
+let jsonHtml = parser.toJson(htmlText)
+console.log('converted html: ', JSON.stringify(jsonHtml))
 
-let nodes = [
-  {
-    name: 'br1-lvl1',
-    nodes: [
-      {
-        name: 'br11-lvl2',
-        nodes: []
-      },
-      {
-        name: 'br12-lvl2',
-        nodes: []
-      }
-    ]
-  },
-  {
-    name: 'br2-lvl1',
-    nodes: [
-      {
-        name: 'br21-lvl2',
-        nodes: [
-          {
-            name: 'br21-lvl3',
-            nodes: []
-          },
-          {
-            name: 'br22-lvl3',
-            nodes: []
-          }
-        ]
-      },
-      {
-        name: 'br22-lvl2',
-        nodes: []
-      }
-    ]
-  }
-]
-
-let level = 1
-let maxDeep = 3
-
-// inititaite temporary nodes
-let tempNodes = nodes
-
-// loop until the desired deep
-while (level < maxDeep) {
-  let tempCopy = []
-  for (let i = 0; i < tempNodes.length; i++) {
-    tempCopy = tempCopy.concat(tempNodes[i].nodes)
-    console.log('node loop')
-  }
-  tempNodes = tempCopy
-  level++
-  console.log('deep loop')
-}
-
-// overwrite some props and add propertiers
-tempNodes.forEach(node => {
-  node.unparsed = 'shit string'
-})
-
-console.log('nodes: ', JSON.stringify(nodes))
+// let nodes = [
+//   {
+//     name: 'br1-lvl1',
+//     nodes: [
+//       {
+//         name: 'br11-lvl2',
+//         nodes: []
+//       },
+//       {
+//         name: 'br12-lvl2',
+//         nodes: []
+//       }
+//     ]
+//   },
+//   {
+//     name: 'br2-lvl1',
+//     nodes: [
+//       {
+//         name: 'br21-lvl2',
+//         nodes: [
+//           {
+//             name: 'br21-lvl3',
+//             nodes: []
+//           },
+//           {
+//             name: 'br22-lvl3',
+//             nodes: []
+//           }
+//         ]
+//       },
+//       {
+//         name: 'br22-lvl2',
+//         nodes: []
+//       }
+//     ]
+//   }
+// ]
+//
+// let level = 1
+// let maxDeep = 3
+//
+// // inititaite temporary nodes
+// let tempNodes = nodes
+//
+// // loop until the desired deep
+// while (level < maxDeep) {
+//   let tempCopy = []
+//   for (let i = 0; i < tempNodes.length; i++) {
+//     tempCopy = tempCopy.concat(tempNodes[i].nodes)
+//     console.log('node loop')
+//   }
+//   tempNodes = tempCopy
+//   level++
+//   console.log('deep loop')
+// }
+//
+// // overwrite some props and add propertiers
+// tempNodes.forEach(node => {
+//   node.unparsed = 'shit string'
+// })
+//
+// console.log('nodes: ', JSON.stringify(nodes))
